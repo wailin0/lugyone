@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "556555150271",
+    "project_id": "lugyone",
+    "storage_bucket": "lugyone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556555150271:android:5cdb35f25bc23dfc71370a",
+        "android_client_info": {
+          "package_name": "com.lugyone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556555150271-701tjm13tn2b9nnk6ac7ec0lui12opss.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lugyone",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "556555150271-e88psp9fa585nqk9bhj9o61vm73us8ek.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFF1-qlVfgKsjp-ePfciGmys4rsM8fPEw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556555150271-e88psp9fa585nqk9bhj9o61vm73us8ek.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
