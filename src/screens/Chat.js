@@ -1,59 +1,82 @@
-import React, {useState} from 'react';
-import {SafeAreaView, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-
+import React, {useContext, useEffect, useState} from 'react';
+import {FlatList, Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
+import Loading from '../components/Loading';
+import firestore from '@react-native-firebase/firestore';
+import {Context} from '../Context';
 
 const Chat = ({navigation}) => {
+    const [chats, setChats] = useState(null);
 
-    const [text, setText] = useState('');
+    const {login} = useContext(Context);
 
+    useEffect(() => {
+        firestore()
+            .collection('chats')
+            .onSnapshot(
+                querySnapshot => {
+                    const array = [];
+                    querySnapshot.forEach(documentSnapshot => {
+                        array.push({
+                            id: documentSnapshot.id,
+                            ...documentSnapshot.data(),
+                        });
+                    });
+                    setChats(array);
+                });
+    }, [login]);
 
-    const sendMessage = async (e) => {
-        e.preventDefault();
-
-        // const { userId, photoURL } = auth.currentUser;
-
-
-        setText('');
+    if (!chats) {
+        return <Loading/>;
     }
 
 
+    const renderItem = ({item}) => {
+        return (
+            <TouchableOpacity
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: 20,
+                }}
+                onPress={() => navigation.navigate('Chat', {
+                    chatRoomId: item.id,
+                })}
+            >
+                <Image source={{uri: item.sender.photoURL}}
+                       style={{
+                           borderRadius: 50,
+                           width: 50,
+                           height: 50,
+                           backgroundColor: 'red',
+                       }}
+                />
+                <View style={{marginLeft: 10, flex: 1}}>
+                    <Text style={{color: '#4a41e7', fontSize: 18}}>{item.sender.name}</Text>
+                    <Text style={{color: 'grey'}}>{item.lastMessage}</Text>
+                </View>
+                <Text style={{color: 'grey'}}>{item.sentTime}</Text>
+            </TouchableOpacity>
+        );
+    };
+
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={{flex: 1, paddingHorizontal: 20, marginVertical: 20}}>
-                <View style={{flex: 1}}>
-                    {/*<GiftedChat*/}
-                    {/*    messages={messages}*/}
-                    {/*    onSend={messages => sendMessage(messages)}*/}
-                    {/*    user={{*/}
-                    {/*        _id: 1,*/}
-                    {/*    }}*/}
-                    {/*/>*/}
-                </View>
-
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <TouchableOpacity>
-                        <Icon name="phone" size={24}/>
-                    </TouchableOpacity>
-                    <TextInput
-                        style={{
-                            borderColor: 'grey',
-                            borderWidth: 1,
-                            borderRadius: 10,
-                            paddingHorizontal: 5,
-                            height: 30,
-                            marginHorizontal: 20,
-                            flex: 1
-                        }}
-                        placeholder='type a message'
-                    />
-                    <TouchableOpacity>
-                        <Text style={{color: 'green'}}>Send</Text>
-                    </TouchableOpacity>
-                </View>
+            <View
+                style={{
+                    flex: 1,
+                    paddingHorizontal: 10,
+                    marginTop: 20,
+                }}
+            >
+                <FlatList
+                    keyExtractor={item => item.id}
+                    data={chats}
+                    renderItem={renderItem}
+                />
             </View>
         </SafeAreaView>
-    )
-}
+    );
+};
 
-export default Chat
+export default Chat;

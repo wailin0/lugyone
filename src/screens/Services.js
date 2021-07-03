@@ -11,7 +11,8 @@ const Services = ({navigation, route}) => {
 
     useEffect(() => {
         firestore()
-            .collection('services')
+            .collection('users')
+            .where('worker','==',true)
             .get()
             .then(querySnapshot => {
                 const array = [];
@@ -45,7 +46,7 @@ const Services = ({navigation, route}) => {
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={{flex: 1, paddingHorizontal: 20, marginTop: 20}}>
+            <View style={{flex: 1, paddingHorizontal: 10, marginTop: 20}}>
                 {Header()}
                 <View style={{marginTop: 20, marginBottom:40}}>
                     <ServiceList navigation={navigation} services={services}/>

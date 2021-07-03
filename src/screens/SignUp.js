@@ -19,6 +19,7 @@ const SignUp = ({navigation}) => {
             const createdUser = await auth().createUserWithEmailAndPassword(email, password)
             const newUser = {
                 name,
+                photoURL: 'http://',
                 email
             }
             await firestore().collection('users').doc(createdUser.user.uid).set(newUser)
@@ -39,7 +40,7 @@ const SignUp = ({navigation}) => {
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={{flex: 1, paddingHorizontal: 20, marginTop: 20}}>
+            <View style={{flex: 1, paddingHorizontal: 10, marginTop: 20}}>
                 <View style={{alignItems: 'center', marginVertical: 20, justifyContent: 'center'}}>
                     <Image
                         source={{uri: 'http:logo'}}

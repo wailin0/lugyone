@@ -3,28 +3,6 @@ import {Alert, Button, FlatList, Image, Modal, Pressable, Text, TouchableOpacity
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const ServiceList = ({navigation, services}) => {
-    const [modal, setModal] = useState(false);
-
-    const updateService = () => {
-        navigation.navigate("Register Service", {
-            services
-        })
-    }
-
-    const deleteService = () => {
-        Alert.alert(
-            "Service Deletion",
-            "Your service will be disabled and reviewed for deletion",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "OK", onPress: () => console.log("OK Pressed") }
-            ]
-        );
-    }
 
     const renderItem = ({item}) => {
         return (
@@ -38,10 +16,8 @@ const ServiceList = ({navigation, services}) => {
                     flexDirection: 'row',
                 }}
                 onPress={() => navigation.navigate('Service Detail', {
-                    serviceId: item.id,
+                    userId: item.id,
                 })}
-                delayLongPress={1}
-                onLongPress={() => setModal(true)}
             >
                 <View style={{width: 50, flexDirection: 'column', alignItems: 'center'}}>
                     <Image
@@ -68,45 +44,20 @@ const ServiceList = ({navigation, services}) => {
                         <Icon name="check-circle" size={15} color="green" style={{marginRight: 10}}/>
                         <Text>Total 4 jobs finished</Text>
                     </View>
-                    <Text>{item.description}</Text>
+                    <Text>{item.serviceDetail}</Text>
                 </View>
             </TouchableOpacity>
         );
     };
 
     return (
-        <>
             <FlatList
                 showsVerticalScrollIndicator={false}
                 data={services}
                 renderItem={renderItem}
                 keyExtractor={item => item.name}
             />
-            <Modal
-                transparent={true}
-                visible={modal}
-                onRequestClose={() => setModal(!modal)}
-            >
-                <Pressable
-                    style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-                    onPress={() => setModal(false)}
-                >
-                    <View
-                        style={{
-                            padding:20,
-                            height:130,
-                            backgroundColor:'#ede4e4',
-                            justifyContent:'space-between',
-                            alignItems:'center',
-                            borderRadius:5
-                        }}
-                    >
-                        <Button title='Update Service' onPress={() => updateService()} />
-                        <Button title='Delete Service' color='red' onPress={() => deleteService()} />
-                    </View>
-                </Pressable>
-            </Modal>
-        </>
+
     );
 };
 

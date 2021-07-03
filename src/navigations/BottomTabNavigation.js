@@ -6,7 +6,7 @@ import Profile from '../screens/Profile';
 import SignUp from '../screens/SignUp';
 import {Context} from '../Context';
 import ServiceNavigation from './ServiceNavigation';
-import Message from '../screens/Message';
+import Chat from '../screens/Chat';
 
 const BottomTabNavigation = () => {
 
@@ -40,7 +40,7 @@ const BottomTabNavigation = () => {
             />
             <Tab.Screen
                 name="Message"
-                component={Message}
+                component={Chat}
                 options={{
                     tabBarIcon: ({focused}) => <Icon name="rocketchat" size={24} color={focused ? 'red' : '#F9AD59'}/>
                 }}

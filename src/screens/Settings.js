@@ -5,17 +5,17 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const settings = [
     {
-        'name': 'ww',
+        'name': 'hide your phone number',
     },
     {
-        'name': 'www',
-    },
+        'name': 'turn off push notification',
+    }
 ];
 
 const Settings = ({navigation}) => {
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={{flex: 1, paddingHorizontal: 20, marginTop: 20}}>
+            <View style={{flex: 1, paddingHorizontal: 10, marginTop: 20}}>
                 <Header navigation={navigation} title='Settings'/>
                 <View
                     style={{

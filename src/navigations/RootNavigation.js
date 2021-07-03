@@ -7,11 +7,10 @@ import Payment from '../screens/Payment';
 import Settings from '../screens/Settings';
 import Support from '../screens/Support';
 import ServiceDetail from '../screens/ServiceDetail';
-import Chat from '../screens/Chat';
+import Message from '../screens/Message';
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import ChooseLocation from '../screens/ChooseLocation';
-import RegisterService from '../screens/RegisterService';
 
 const Stack = createStackNavigator()
 
@@ -31,11 +30,10 @@ const RootNavigation = () => {
             <Stack.Screen name='Settings' component={Settings}/>
             <Stack.Screen name='Support' component={Support}/>
             <Stack.Screen name='Service Detail' component={ServiceDetail}/>
-            <Stack.Screen name='Chat' component={Chat}/>
+            <Stack.Screen name='Chat' component={Message}/>
             <Stack.Screen name='Sign In' component={SignIn}/>
             <Stack.Screen name='Sign Up' component={SignUp}/>
             <Stack.Screen name='Choose Location' component={ChooseLocation}/>
-            <Stack.Screen name='Register Service' component={RegisterService}/>
         </Stack.Navigator>
     );
 };

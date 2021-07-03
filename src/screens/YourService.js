@@ -1,49 +1,27 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Button, SafeAreaView, Text, View} from 'react-native';
-import firestore from '@react-native-firebase/firestore';
 import {Context} from '../Context';
 import ServiceList from '../components/ServiceList';
-import Loading from '../components/Loading';
 
 const YourService = ({navigation}) => {
-    const [services, setServices] = useState(null);
+    const [services, setServices] = useState([]);
 
-    const {login} = useContext(Context);
+    const {login, user} = useContext(Context);
 
-    useEffect(() => {
-        firestore()
-            .collection('services')
-            .where('userId', '==', login && login.uid)
-            .onSnapshot(
-                onResult => {
-                    const array = [];
-                    onResult.forEach(documentSnapshot => {
-                        array.push({
-                            id: documentSnapshot.id,
-                            ...documentSnapshot.data(),
-                        });
-                    });
-                    setServices(array);
-                },
-            );
-
-    }, [login]);
-
-    if (!services) {
-        return <Loading/>;
-    }
-
-    if (services.length === 0) {
+    if (!user.worker) {
         return (
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                 <Text style={{fontSize: 18, marginBottom: 20}}>
-                    You dont have any service yet!
+                    Track your works here
+                </Text>
+                <Text style={{marginBottom:10}}>
+                    You haven't register your service yet
                 </Text>
                 <Button
-                    title='Register a new service'
+                    title='Update your account'
                     onPress={() => {
                         login
-                            ? navigation.navigate('Register Service')
+                            ? navigation.navigate('Account')
                             : navigation.navigate('Profile');
                     }}
                 />
@@ -51,10 +29,23 @@ const YourService = ({navigation}) => {
         );
     }
 
+    if(services.length===0){
+        return (
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={{fontSize: 18, marginBottom: 20}}>
+                    You are now registered as a {user.serviceCategory}
+                </Text>
+                <Text style={{marginBottom:10}}>
+                    your can track accepted jobs here
+                </Text>
+            </View>
+        );
+    }
+
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={{flex: 1, paddingHorizontal: 20, marginVertical: 20}}>
+            <View style={{flex: 1, paddingHorizontal: 10, marginVertical: 20}}>
                 <ServiceList navigation={navigation} services={services}/>
             </View>
         </SafeAreaView>

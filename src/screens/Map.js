@@ -5,7 +5,7 @@ import {Context} from '../Context';
 import Loading from '../components/Loading';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const Map = ({setCoords}) => {
+const Map = ({setCoords, setModal}) => {
     const {location} = useContext(Context);
     const [state, setState] = useState(null);
 
@@ -40,8 +40,6 @@ const Map = ({setCoords}) => {
         return <Loading/>;
     }
 
-    console.log(state);
-
     return (
         <View style={{flex: 1}}>
             <MapView
@@ -65,7 +63,10 @@ const Map = ({setCoords}) => {
                     justifyContent: 'center',
 
                 }}
-                onPress={() => setCoords(state.markerData)}
+                onPress={() => {
+                    setCoords({...state.markerData})
+                    setModal(false)
+                }}
             >
                 <View
                     style={{

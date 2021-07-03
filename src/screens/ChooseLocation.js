@@ -9,36 +9,46 @@ import api from '../services/api';
 const ChooseLocation = ({navigation}) => {
     const [modal, setModal] = useState(false);
     const [select, setSelect] = useState('current');
+    const [yourLocation, setYourLocation] = useState('')
     const [customCoords, setCustomCoords] = useState({
         latitude: null,
-        longitude: null
-    })
-    const [customLocation, setCustomLocation] = useState(null)
+        longitude: null,
+    });
+
+    const {location} = useContext(Context);
+
+    useEffect(() => {
+        setCustomCoords({latitude: location.latitude, longitude: location.longitude})
+    }, [location.address])
 
     useEffect(() => {
         api.getLocation(customCoords.longitude, customCoords.latitude)
             .then(res => {
-                setCustomLocation(res.features[0].place_name)
+                setYourLocation(res.features[0].place_name);
             })
+            .catch(e => {
+                console.log(e);
+            });
     }, [customCoords])
-
-    const {location} = useContext(Context);
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={{flex: 1, paddingHorizontal: 20, marginVertical: 20}}>
+            <View style={{flex: 1, paddingHorizontal: 10, marginVertical: 20}}>
                 <Header navigation={navigation} title='Choose Location'/>
 
                 <View style={{top: 50}}>
-                    <Text>Your current Location,</Text>
-                    <Text style={{fontSize: 17, marginTop: 5}}>{location.address}</Text>
+                    <Text>Location,</Text>
+                    <Text style={{fontSize: 17, marginTop: 5}}>{yourLocation}</Text>
                 </View>
 
                 <View style={{flex: 1, justifyContent: 'center'}}>
 
                     <TouchableOpacity
                         style={{flexDirection: 'row', marginBottom: 20, alignItems: 'center'}}
-                        onPress={() => setSelect('current')}
+                        onPress={() => {
+                            setSelect('current')
+                            setYourLocation(location.address)
+                        }}
                     >
                         <RadioButton selected={select === 'current'}/>
                         <Text>Near your current location</Text>
@@ -46,21 +56,37 @@ const ChooseLocation = ({navigation}) => {
 
                     <TouchableOpacity
                         style={{flexDirection: 'row', marginBottom: 20, alignItems: 'center'}}
-                        onPress={() => {
-                            setModal(true);
-                            setSelect('custom');
-                        }}
+                        onPress={() => setSelect('custom')}
                     >
                         <RadioButton selected={select === 'custom'}/>
                         <View>
                             <Text>Choose a location from map</Text>
-                            {customLocation && <Text style={{fontSize:18,color:'green'}}>{customLocation}</Text>}
+                            {select === 'custom' &&
+                                <TouchableOpacity
+                                    style={{
+                                        backgroundColor: 'green',
+                                        width: 80,
+                                        height: 30,
+                                        marginTop: 10,
+                                        marginLeft: 20,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderRadius: 10,
+                                    }}
+                                    onPress={() => setModal(true)}
+                                >
+                                    <Text>open map</Text>
+                                </TouchableOpacity>
+                            }
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={{flexDirection: 'row', marginBottom: 20, alignItems: 'center'}}
-                        onPress={() => setSelect('any')}
+                        onPress={() => {
+                            setSelect('any')
+                            setYourLocation('Anywhere')
+                        }}
                     >
                         <RadioButton selected={select === 'any'}/>
                         <Text>Anywhere</Text>
@@ -84,7 +110,7 @@ const ChooseLocation = ({navigation}) => {
                 onRequestClose={() => setModal(!modal)}
             >
                 <View style={{flex: 1}}>
-                    <Map setCustomCoords={setCustomCoords} />
+                    <Map setCoords={setCustomCoords} setModal={setModal}/>
                 </View>
             </Modal>
         </SafeAreaView>

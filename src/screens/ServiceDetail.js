@@ -6,16 +6,18 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Context} from '../Context';
 import firestore from '@react-native-firebase/firestore';
 import Loading from '../components/Loading';
+import Reviews from '../components/Reviews';
 
 const ServiceDetail = ({navigation, route}) => {
-    const {serviceId} = route.params;
+    const {userId, serviceCategory} = route.params;
     const [service, setService] = useState(null);
 
     useEffect(() => {
-        firestore().collection('services').doc(serviceId).get()
+        firestore().collection('users').doc(userId)
+            .get()
             .then(response => setService(response.data()))
             .catch(e => console.log(e));
-    }, [serviceId]);
+    }, [userId]);
 
     if (!service) {
         return <Loading/>;
@@ -23,18 +25,16 @@ const ServiceDetail = ({navigation, route}) => {
 
     const {login} = useContext(Context);
 
+
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={{flex: 1, paddingHorizontal: 20, marginVertical: 20}}>
+            <View style={{flex: 1, paddingHorizontal: 10, marginVertical: 20}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Header navigation={navigation} title='Service Detail'/>
                 </View>
                 <View style={{
                     flex: 1,
-                    marginTop: 20,
-                    marginBottom: 10,
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
+                    marginTop: 20
                 }}>
                     <View>
                         <View
@@ -62,14 +62,16 @@ const ServiceDetail = ({navigation, route}) => {
                         </View>
 
 
-                        <View style={{marginTop: 20}}>
-                            <Text>{service.description}</Text>
+                        <View style={{marginTop: 10}}>
+                            <Text>{service.serviceDetail}</Text>
                         </View>
                     </View>
 
+                    <Reviews />
+
                 </View>
 
-                {login.uid !== service.userId &&
+                {(login && login.uid !== service.id) &&
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly'}}>
                     <TouchableOpacity
                         style={{
