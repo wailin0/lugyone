@@ -94,6 +94,7 @@ const SignUp = ({navigation}) => {
                         Already have an account?
                     </Text>
                     <TouchableOpacity
+                        disabled={!(name && email && password && confirmPassword)}
                         onPress={() => navigation.navigate('Sign In')}
                     >
                         <Text style={{color: 'blue', marginLeft: 10}}>Sign In</Text>

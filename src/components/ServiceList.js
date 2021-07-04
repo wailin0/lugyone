@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Alert, Button, FlatList, Image, Modal, Pressable, Text, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const ServiceList = ({navigation, services}) => {
@@ -16,7 +16,7 @@ const ServiceList = ({navigation, services}) => {
                     flexDirection: 'row',
                 }}
                 onPress={() => navigation.navigate('Service Detail', {
-                    userId: item.id,
+                    serviceId: item.id,
                 })}
             >
                 <View style={{width: 50, flexDirection: 'column', alignItems: 'center'}}>
@@ -36,27 +36,27 @@ const ServiceList = ({navigation, services}) => {
                 }}>
                     <Text>{item.name}</Text>
                     <View style={{flexDirection: 'row', marginVertical: 5, alignItems: 'center'}}>
-                        <Text>{item.rating}</Text>
                         <Icon name="star" size={15} color="gold" style={{marginHorizontal: 10}}/>
-                        <Text>(43 reviews)</Text>
+                        <Text style={{marginRight: 10}}>{item.rating}</Text>
+                        <Text>({item.reviewCount} reviews)</Text>
                     </View>
                     <View style={{flexDirection: 'row', marginVertical: 5, alignItems: 'center'}}>
-                        <Icon name="check-circle" size={15} color="green" style={{marginRight: 10}}/>
-                        <Text>Total 4 jobs finished</Text>
+                        <Icon name="map-marker-alt" size={15} style={{marginHorizontal: 13}}/>
+                        <Text>{item.location}</Text>
                     </View>
-                    <Text>{item.serviceDetail}</Text>
+                    <Text numberOfLines={2}>{item.serviceDetail}</Text>
                 </View>
             </TouchableOpacity>
         );
     };
 
     return (
-            <FlatList
-                showsVerticalScrollIndicator={false}
-                data={services}
-                renderItem={renderItem}
-                keyExtractor={item => item.name}
-            />
+        <FlatList
+            showsVerticalScrollIndicator={false}
+            data={services}
+            renderItem={renderItem}
+            keyExtractor={item => item.name}
+        />
 
     );
 };

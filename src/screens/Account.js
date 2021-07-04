@@ -37,7 +37,7 @@ const Account = ({navigation}) => {
         setServiceCategory(user.serviceCategory)
         setServiceDetail(user.serviceDetail)
         setPhone(user.phone)
-        setCoords(user.location)
+        setCoords(user.gps)
     }, [user])
 
     useEffect(() => {
@@ -61,7 +61,8 @@ const Account = ({navigation}) => {
                 email,
                 serviceCategory,
                 phone,
-                location: coords,
+                location,
+                gps: coords,
                 serviceDetail,
                 worker: true
             })
@@ -115,13 +116,13 @@ const Account = ({navigation}) => {
                         {location && <Text>{location}</Text>}
                         <TouchableOpacity
                             style={{
-                                backgroundColor: 'green',
+                                backgroundColor: 'lightgreen',
                                 width: 80,
                                 height: 30,
                                 marginTop: 10,
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                borderRadius: 10,
+                                borderRadius: 5,
                                 marginBottom:10
                             }}
                             onPress={() => setOpenMap(true)}

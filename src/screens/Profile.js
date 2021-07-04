@@ -1,14 +1,12 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Button, Image, Modal, Pressable, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {Button, Image, Modal, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import auth from '@react-native-firebase/auth';
 import {Context} from '../Context';
 import Loading from '../components/Loading';
 import storage from '@react-native-firebase/storage';
 import {launchImageLibrary} from 'react-native-image-picker';
-import firestore from '@react-native-firebase/firestore'
-import Map from './Map';
-import {log} from 'react-native-reanimated';
+import firestore from '@react-native-firebase/firestore';
 
 const settings = [
     {

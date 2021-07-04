@@ -5,7 +5,6 @@ import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 import SignUp from '../screens/SignUp';
 import {Context} from '../Context';
-import ServiceNavigation from './ServiceNavigation';
 import Chat from '../screens/Chat';
 
 const BottomTabNavigation = () => {
@@ -29,13 +28,6 @@ const BottomTabNavigation = () => {
                 component={Home}
                 options={{
                     tabBarIcon: ({focused}) => <Icon name="home" size={24} color={focused ? 'red' : '#F9AD59'}/>
-                }}
-            />
-            <Tab.Screen
-                name="Service"
-                component={ServiceNavigation}
-                options={{
-                    tabBarIcon: ({focused}) => <Icon name="tasks" size={24} color={focused ? 'red' : '#F9AD59'}/>
                 }}
             />
             <Tab.Screen

@@ -12,6 +12,7 @@ import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import ChooseLocation from '../screens/ChooseLocation';
 
+
 const Stack = createStackNavigator()
 
 const RootNavigation = () => {
@@ -34,6 +35,7 @@ const RootNavigation = () => {
             <Stack.Screen name='Sign In' component={SignIn}/>
             <Stack.Screen name='Sign Up' component={SignUp}/>
             <Stack.Screen name='Choose Location' component={ChooseLocation}/>
+
         </Stack.Navigator>
     );
 };

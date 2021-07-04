@@ -38,7 +38,7 @@ const ChooseLocation = ({navigation}) => {
 
                 <View style={{top: 50}}>
                     <Text>Location,</Text>
-                    <Text style={{fontSize: 17, marginTop: 5}}>{yourLocation}</Text>
+                    <Text style={{fontSize: 17, marginTop: 5}}>{location && yourLocation}</Text>
                 </View>
 
                 <View style={{flex: 1, justifyContent: 'center'}}>
@@ -64,14 +64,14 @@ const ChooseLocation = ({navigation}) => {
                             {select === 'custom' &&
                                 <TouchableOpacity
                                     style={{
-                                        backgroundColor: 'green',
+                                        backgroundColor: 'lightgreen',
                                         width: 80,
                                         height: 30,
                                         marginTop: 10,
                                         marginLeft: 20,
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        borderRadius: 10,
+                                        borderRadius: 5,
                                     }}
                                     onPress={() => setModal(true)}
                                 >
