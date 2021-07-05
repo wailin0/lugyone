@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {input} from '../styles/theme';
+import {input, lugyoneLogo} from '../styles/theme';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
@@ -43,16 +43,18 @@ const SignUp = ({navigation}) => {
             <View style={{flex: 1, paddingHorizontal: 10, marginTop: 20}}>
                 <View style={{alignItems: 'center', marginVertical: 20, justifyContent: 'center'}}>
                     <Image
-                        source={{uri: 'http:logo'}}
+                        source={lugyoneLogo}
                         style={{
-                            width: 70, height: 70,
-                            backgroundColor: 'red',
+                            width: '100%', height: 70,
                         }}
+                        resizeMode='contain'
                     />
                 </View>
 
                 <View>
-                    <Text style={{fontSize: 20, marginBottom: 10}}>Create your account</Text>
+                    <Text style={{fontSize: 20, marginBottom: 10}}>
+                        Create your account
+                    </Text>
                     <TextInput
                         value={name}
                         onChangeText={text => setName(text)}
@@ -84,8 +86,8 @@ const SignUp = ({navigation}) => {
                     />
                     {error && <Text style={{color: 'red', marginBottom: 10}}>{error}</Text>}
                     <Button title='Sign Up'
+                            disabled={!(name && email && password && confirmPassword)}
                             onPress={() => handleSignUp()}
-                            color='red'
                     />
                 </View>
 
@@ -94,7 +96,6 @@ const SignUp = ({navigation}) => {
                         Already have an account?
                     </Text>
                     <TouchableOpacity
-                        disabled={!(name && email && password && confirmPassword)}
                         onPress={() => navigation.navigate('Sign In')}
                     >
                         <Text style={{color: 'blue', marginLeft: 10}}>Sign In</Text>

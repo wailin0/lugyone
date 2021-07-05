@@ -1,5 +1,9 @@
 import React from 'react';
 
+const logo = require('../assets/logo.png')
+
+export const lugyoneLogo = logo
+
 export const input = {
     height: 40,
     borderWidth: 1,

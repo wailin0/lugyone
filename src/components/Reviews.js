@@ -7,7 +7,7 @@ const Reviews = ({reviews, service}) => {
 
     return (
         <>
-            <View style={{alignSelf: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20}}>
+            <View style={{alignSelf: 'center', alignItems: 'center', marginTop: 10, marginBottom: 20}}>
                 <Text style={{fontSize: 35, fontWeight: 'bold'}}>
                     {service.rating}
                 </Text>

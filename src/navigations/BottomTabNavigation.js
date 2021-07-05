@@ -3,9 +3,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
-import SignUp from '../screens/SignUp';
 import {Context} from '../Context';
-import Chat from '../screens/Chat';
+import TopTabNavigation from './TopTabNavigation';
+import SignIn from '../screens/SignIn';
 
 const BottomTabNavigation = () => {
 
@@ -31,15 +31,15 @@ const BottomTabNavigation = () => {
                 }}
             />
             <Tab.Screen
-                name="Message"
-                component={Chat}
+                name="Chat"
+                component={login ? TopTabNavigation : SignIn}
                 options={{
                     tabBarIcon: ({focused}) => <Icon name="rocketchat" size={24} color={focused ? 'red' : '#F9AD59'}/>
                 }}
             />
             <Tab.Screen
                 name="Profile"
-                component={login ? Profile: SignUp}
+                component={login ? Profile: SignIn}
                 options={{
                     tabBarIcon: ({focused}) => <Icon name="user-alt" size={24} color={focused ? 'red' : '#F9AD59'}/>
                 }}

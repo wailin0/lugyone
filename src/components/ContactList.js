@@ -1,34 +1,10 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {FlatList, Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
-import Loading from '../components/Loading';
-import firestore from '@react-native-firebase/firestore';
 import {Context} from '../Context';
 
-const Chat = ({navigation}) => {
-    const [chats, setChats] = useState(null);
+const ContactList = ({chats,navigation}) => {
 
-    const {login} = useContext(Context);
-
-    useEffect(() => {
-        firestore()
-            .collection('chats')
-            .onSnapshot(
-                querySnapshot => {
-                    const array = [];
-                    querySnapshot.forEach(documentSnapshot => {
-                        array.push({
-                            id: documentSnapshot.id,
-                            ...documentSnapshot.data(),
-                        });
-                    });
-                    setChats(array);
-                });
-    }, [login]);
-
-    if (!chats) {
-        return <Loading/>;
-    }
-
+    const {login} = useContext(Context)
 
     const renderItem = ({item}) => {
         return (
@@ -39,11 +15,11 @@ const Chat = ({navigation}) => {
                     justifyContent: 'space-between',
                     marginBottom: 20,
                 }}
-                onPress={() => navigation.navigate('Chat', {
+                onPress={() => navigation.navigate('Message', {
                     chatRoomId: item.id,
                 })}
             >
-                <Image source={{uri: item.sender.photoURL}}
+                <Image source={{uri: login.uid===item.sender.id ? item.receiver.photoURL : item.sender.photoURL}}
                        style={{
                            borderRadius: 50,
                            width: 50,
@@ -52,7 +28,7 @@ const Chat = ({navigation}) => {
                        }}
                 />
                 <View style={{marginLeft: 10, flex: 1}}>
-                    <Text style={{color: '#4a41e7', fontSize: 18}}>{item.sender.name}</Text>
+                    <Text style={{color: '#4a41e7', fontSize: 18}}>{login.uid===item.sender.id ? item.receiver.name : item.sender.name}</Text>
                     <Text style={{color: 'grey'}}>{item.lastMessage}</Text>
                 </View>
                 <Text style={{color: 'grey'}}>{item.sentTime}</Text>
@@ -76,7 +52,7 @@ const Chat = ({navigation}) => {
                 />
             </View>
         </SafeAreaView>
-    );
-};
+    )
+}
 
-export default Chat;
+export default ContactList

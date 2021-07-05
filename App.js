@@ -6,17 +6,14 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import Geolocation from 'react-native-geolocation-service';
 import api from './src/services/api';
+import {Alert, BackHandler, PermissionsAndroid} from 'react-native';
 
 export default function App() {
 
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState();
     const [login, setLogin] = useState();
-    const [location, setLocation] = useState({
-        address: null,
-        latitude: null,
-        longitude: null,
-    });
+    const [location, setLocation] = useState(null);
 
     // Handle user state changes
     function onAuthStateChanged(login) {
@@ -27,22 +24,42 @@ export default function App() {
     }
 
     useEffect(() => {
-        Geolocation.getCurrentPosition(
-            (position) => {
-                api.getLocation(position.coords.longitude, position.coords.latitude)
-                    .then(r => {
-                        setLocation({
-                            address: r.features[0].place_name,
-                            latitude: position.coords.latitude,
-                            longitude: position.coords.longitude,
-                        })
-                    })
+
+        PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+                'title': 'Hello!',
+                'message': 'This app need to access your location to work',
             },
-            (error) => {
-                console.log(error.code, error.message);
-            },
-            {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-        );
+        ).then((response) => {
+            if (response==='granted') {
+                Geolocation.getCurrentPosition(
+                    (position) => {
+                        api.getLocation(position.coords.longitude, position.coords.latitude)
+                            .then(r => {
+                                setLocation({
+                                    address: r.features[0].place_name,
+                                    latitude: position.coords.latitude,
+                                    longitude: position.coords.longitude,
+                                });
+                            });
+                    },
+                    (error) => {
+                        console.log(error.code, error.message);
+                    },
+                    {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+                )
+            }
+            else{
+                Alert.alert(
+                    "Alert",
+                    "You need to allow location permission to use the app",
+                    [
+                        { text: "OK", onPress: () => BackHandler.exitApp() }
+                    ]
+                );
+            }
+        });
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
         return subscriber; // unsubscribe on unmount
     }, []);

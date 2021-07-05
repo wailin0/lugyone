@@ -13,7 +13,7 @@ const ServiceDetail = ({navigation, route}) => {
     const [reviews, setReviews] = useState(null);
     const [modal, setModal] = useState(false);
     const [alreadyReviewed, setAlreadyReviewed] = useState(false);
-    const {login} = useContext(Context);
+    const {login, user} = useContext(Context);
     useEffect(() => {
         firestore().collection('users').doc(serviceId)
             .get()
@@ -71,6 +71,44 @@ const ServiceDetail = ({navigation, route}) => {
         setReviews(updatedState);
     };
 
+    const createChatRoom = () => {
+
+        const data = {
+            sender: {
+                id: login.uid,
+                name: user.name,
+                photoURL: user.photoURL,
+            },
+            receiver: {
+                id: service.id,
+                name: service.name,
+                photoURL: service.photoURL,
+            },
+            createdAt: Date.now(),
+        };
+
+        firestore().collection('chats')
+            .where('sender.id', '==', login.uid)
+            .where('receiver.id', '==', service.id)
+            .get()
+            .then(chatRoomExist => {
+                if (chatRoomExist.empty) {
+                    firestore().collection('chats')
+                        .add(data)
+                        .then(response => {
+                            navigation.push('Message', {
+                                chatRoomId: response.id,
+                            });
+                        });
+                } else {
+                    navigation.push('Message', {
+                        chatRoomId: chatRoomExist._docs[0].id,
+                    });
+                }
+            });
+
+    };
+
     if (!service || !reviews) {
         return <Loading/>;
     }
@@ -85,8 +123,8 @@ const ServiceDetail = ({navigation, route}) => {
                         >
                             <Icon name='angle-left' size={24} color="black"/>
                         </TouchableOpacity>
-                        <Text style={{fontWeight: 'bold', fontSize: 20, marginLeft: 20, flex: 1}}>Service
-                            Detail</Text>
+                        <Text style={{fontWeight: 'bold', fontSize: 20, marginLeft: 20, flex: 1}}>
+                            Worker Profile </Text>
                         {(login && (service.id !== login.uid && !alreadyReviewed)) &&
                         <TouchableOpacity
                             style={{
@@ -176,7 +214,7 @@ const ServiceDetail = ({navigation, route}) => {
                             backgroundColor: '#ca7adf',
                             flexDirection: 'row',
                         }}
-                        onPress={() => navigation.push('Chat')}
+                        onPress={() => createChatRoom()}
                     >
                         <Icon name="rocketchat" size={20} color="white" style={{marginRight: 10}}/>
                         <Text style={{color: 'white'}}>Message</Text>

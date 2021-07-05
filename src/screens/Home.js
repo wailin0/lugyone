@@ -1,11 +1,22 @@
-import React, {useContext} from 'react';
-import {FlatList, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {FlatList, Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {categories} from '../dummy';
 import {Context} from '../Context';
+import api from '../services/api';
+import Loading from '../components/Loading';
 
 const Home = ({navigation}) => {
+    const [categories, setCategories] = useState(null);
     const {location} = useContext(Context);
+
+    useEffect(() => {
+        api.getCategories()
+            .then(data => setCategories(data));
+    }, []);
+
+    if(!categories){
+        return <Loading />
+    }
 
     const Header = () => {
         return (
@@ -13,38 +24,15 @@ const Home = ({navigation}) => {
                 style={{flexDirection: 'row', alignItems: 'center'}}
             >
                 <Icon name="map-marker-alt" size={15} color="black"/>
-                <Text style={{fontSize: 15, marginLeft: 10}}>{location.address}</Text>
-            </View>
-        );
-    };
-
-    const Search = () => {
-        return (
-            <View style={{marginTop: 20}}>
-                <TextInput
-                    style={{
-                        height: 35,
-                        borderWidth: 1,
-                        borderRadius: 5,
-                        borderColor: 'grey',
-                        paddingLeft: 10,
-                        paddingRight: 30,
-                    }}
-                    placeholder='Search (e.g. english teacher, motor repair)'
-                />
-                <Icon name="search" size={15} color="black"
-                      style={{
-                          position: 'absolute',
-                          right: 10,
-                          top: 10,
-                      }}
-                />
+                <Text style={{
+                    fontSize: 15,
+                    marginLeft: 10,
+                }}>{location ? location.address : 'no access to your gps'}</Text>
             </View>
         );
     };
 
     const Services = () => {
-
         const renderItem = ({item}) => {
             return (
                 <TouchableOpacity
@@ -60,7 +48,7 @@ const Home = ({navigation}) => {
                         marginBottom: 10,
                     }}
                     onPress={() => navigation.navigate('Choose Location', {
-                        serviceCategory: item.name
+                        serviceCategory: item.name,
                     })}
                 >
                     <Image
@@ -97,7 +85,6 @@ const Home = ({navigation}) => {
         <SafeAreaView style={{flex: 1}}>
             <View style={{flex: 1, paddingHorizontal: 10, marginTop: 20}}>
                 {Header()}
-                {Search()}
                 {Services()}
             </View>
         </SafeAreaView>

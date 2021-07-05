@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Pressable, Text, TextInput, View} from 'react-native';
+import {Button, Pressable, TextInput, View} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import {Context} from '../Context';
-import {AirbnbRating} from 'react-native-ratings'
+import {AirbnbRating} from 'react-native-ratings';
 
 const WriteReview = ({setModal, serviceId, updateUserRating, addReview}) => {
 

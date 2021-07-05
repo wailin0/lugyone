@@ -17,28 +17,32 @@ import firestore from '@react-native-firebase/firestore';
 import {input} from '../styles/theme';
 import Map from './Map';
 import api from '../services/api';
+import {Picker} from '@react-native-picker/picker';
+import Loading from '../components/Loading';
 
 const Account = ({navigation}) => {
-    const [modal, setModal] = useState(false)
-    const [openMap, setOpenMap] = useState(false)
-    const [phone, setPhone] = useState('');
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [serviceCategory, setServiceCategory] = useState('')
+    const [modal, setModal] = useState(false);
+    const [openMap, setOpenMap] = useState(false);
+    const [name, setName] = useState('');
+    const [serviceCategory, setServiceCategory] = useState('');
     const [location, setLocation] = useState(null);
     const [coords, setCoords] = useState(null);
     const [serviceDetail, setServiceDetail] = useState('');
+    const [categories, setCategories] = useState(null);
 
-    const {user,login} = useContext(Context)
+    const {user, login} = useContext(Context);
 
     useEffect(() => {
-        setName(user.name)
-        setEmail(user.email)
-        setServiceCategory(user.serviceCategory)
-        setServiceDetail(user.serviceDetail)
-        setPhone(user.phone)
-        setCoords(user.gps)
-    }, [user])
+        setName(user.name);
+        setServiceCategory(user.serviceCategory);
+        setServiceDetail(user.serviceDetail);
+        setCoords(user.gps);
+    }, [user]);
+
+    useEffect(() => {
+        api.getCategories()
+            .then(data => setCategories(data));
+    }, []);
 
     useEffect(() => {
         if (coords) {
@@ -53,22 +57,28 @@ const Account = ({navigation}) => {
     }, [coords]);
 
     const updateUser = () => {
-        firestore()
-            .collection('users')
-            .doc(login.uid)
-            .update({
-                name,
-                email,
-                serviceCategory,
-                phone,
-                location,
-                gps: coords,
-                serviceDetail,
-                worker: true
-            })
-            .then(() => {
-                setModal(true)
-            });
+            firestore()
+                .collection('users')
+                .doc(login.uid)
+                .update({
+                    name,
+                    serviceCategory,
+                    location,
+                    rating: 0,
+                    reviewCount: 0,
+                    gps: coords,
+                    serviceDetail,
+                    userConfirmed: true,
+                })
+                .then(() => {
+                    setModal(true);
+                });
+        }
+
+
+
+    if(!categories){
+        return <Loading />
     }
 
     return (
@@ -79,7 +89,7 @@ const Account = ({navigation}) => {
                     <ScrollView
                         showsVerticalScrollIndicator={false}
                         style={{
-                            marginTop: 20
+                            marginTop: 20,
                         }}
                     >
                         <Text>Full Name</Text>
@@ -89,28 +99,26 @@ const Account = ({navigation}) => {
                             style={{...input}}
                         />
 
-                        <Text>Email Address</Text>
-                        <TextInput
-                            value={email}
-                            onChangeText={text => setEmail(text)}
-                            style={{...input}}
-                        />
-
+                        <Text style={{
+                            marginVertical: 20,
+                            paddingBottom: 10,
+                            fontSize: 16,
+                            borderBottomColor: 'grey',
+                            borderBottomWidth: 1,
+                        }}>
+                            Update your account to register your service
+                        </Text>
                         <Text>Choose a category for your service</Text>
-                        <TextInput
-                            value={serviceCategory}
-                            onChangeText={text => setServiceCategory(text)}
-                            placeholder='category name'
-                            style={{...input}}
-                        />
-
-                        <Text>Phone Number</Text>
-                        <TextInput
-                            value={phone}
-                            onChangeText={text => setPhone(text)}
-                            placeholder='enter your phone number'
-                            style={{...input}}
-                        />
+                        <Picker
+                            style={{width: 200}}
+                            selectedValue={serviceCategory}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setServiceCategory(itemValue)
+                            }>
+                            {categories.map(category =>
+                                <Picker.Item key={category.name} label={category.name} value={category.name}/>,
+                            )}
+                        </Picker>
 
                         <Text>Location</Text>
                         {location && <Text>{location}</Text>}
@@ -123,7 +131,7 @@ const Account = ({navigation}) => {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 borderRadius: 5,
-                                marginBottom:10
+                                marginBottom: 10,
                             }}
                             onPress={() => setOpenMap(true)}
                         >
@@ -143,9 +151,9 @@ const Account = ({navigation}) => {
                     </ScrollView>
 
                     <Button
+                        disabled={!(name && serviceCategory && serviceDetail && location && coords)}
                         title='Update'
                         onPress={() => updateUser()}
-                        color='red'
                     />
                 </View>
 
@@ -154,23 +162,29 @@ const Account = ({navigation}) => {
             <Modal
                 transparent={true}
                 visible={modal}
-                onRequestClose={() => setModal(!modal)}
+                onRequestClose={() => {
+                    setModal(!modal);
+                    navigation.goBack();
+                }}
             >
                 <Pressable
                     style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-                    onPress={() => setModal(false)}
+                    onPress={() => {
+                        setModal(false);
+                        navigation.goBack();
+                    }}
                 >
                     <View
                         style={{
-                            padding:20,
-                            backgroundColor:'white',
-                            justifyContent:'center',
-                            alignItems:'center',
-                            borderRadius:5
+                            padding: 20,
+                            backgroundColor: 'white',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: 5,
                         }}
                     >
-                        <Icon name="check-circle" size={30} color="green" />
-                        <Text style={{marginTop:20}}>Updated Successfully</Text>
+                        <Icon name="check-circle" size={30} color="green"/>
+                        <Text style={{marginTop: 20}}>Updated Successfully</Text>
                     </View>
                 </Pressable>
             </Modal>
@@ -184,7 +198,7 @@ const Account = ({navigation}) => {
                 </View>
             </Modal>
         </SafeAreaView>
-    )
-}
+    );
+};
 
-export default Account
+export default Account;

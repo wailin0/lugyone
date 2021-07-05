@@ -28,7 +28,6 @@ const ServiceList = ({navigation, services}) => {
                             backgroundColor: 'lightgrey',
                         }}
                     />
-                    <Text style={{fontSize: 18, marginTop: 20}}>4/hr</Text>
                 </View>
                 <View style={{
                     marginLeft: 20,

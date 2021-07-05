@@ -13,9 +13,6 @@ const settings = [
         name: 'Account',
     },
     {
-        name: 'Payment',
-    },
-    {
         name: 'Settings',
     },
     {

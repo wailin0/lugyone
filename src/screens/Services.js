@@ -12,7 +12,7 @@ const Services = ({navigation, route}) => {
     useEffect(() => {
         firestore()
             .collection('users')
-            .where('worker','==',true)
+            .where('userConfirmed','==',true)
             .get()
             .then(querySnapshot => {
                 const array = [];
@@ -38,7 +38,9 @@ const Services = ({navigation, route}) => {
                 >
                     <Icon name="angle-left" size={24} color="black"/>
                 </TouchableOpacity>
-                <Text style={{marginLeft: 20, fontSize: 20, fontWeight: 'bold'}}>Services</Text>
+                <Text style={{marginLeft: 20, fontSize: 20, fontWeight: 'bold'}}>
+                    Choose a Worker
+                </Text>
             </View>
         );
     };

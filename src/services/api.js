@@ -6,6 +6,12 @@ const getLocation = async (longitude, latitude) => {
     return response.json()
 }
 
+const getCategories = async () => {
+    const response = await fetch('https://lugyone-default-rtdb.asia-southeast1.firebasedatabase.app/categories.json')
+    return response.json()
+}
+
 export default {
-    getLocation
+    getLocation,
+    getCategories
 }
