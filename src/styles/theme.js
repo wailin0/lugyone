@@ -4,6 +4,10 @@ const logo = require('../assets/logo.png')
 
 export const lugyoneLogo = logo
 
+export const color = {
+    button : '#841584'
+}
+
 export const input = {
     height: 40,
     borderWidth: 1,

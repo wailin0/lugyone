@@ -1,17 +1,14 @@
 import React, {useState} from 'react';
 import {Button, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {input, lugyoneLogo} from '../styles/theme';
+import {color, input, lugyoneLogo} from '../styles/theme';
 import auth from '@react-native-firebase/auth';
 
 const SignIn = ({navigation}) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [phone, setPhone] = useState('');
     const [error, setError] = useState(null);
 
     const handleSignIn = () => {
-        auth().signInWithEmailAndPassword(email, password)
-            .then(() => navigation.goBack())
-            .catch(e => setError('invalid email or password'));
+
     };
 
 
@@ -30,27 +27,21 @@ const SignIn = ({navigation}) => {
 
                 <View>
                     <Text style={{fontSize: 20, marginBottom: 10}}>
-                        Sign in to your account
+                        Sign in with your phone number
                     </Text>
                     <TextInput
-                        value={email}
-                        onChangeText={text => setEmail(text)}
+                        value={phone}
+                        onChangeText={text => setPhone(text)}
                         style={{...input}}
-                        placeholder='email address'
-                        autoCapitalize='none'
-                    />
-                    <TextInput
-                        value={password}
-                        onChangeText={text => setPassword(text)} s
-                        style={{...input}}
-                        placeholder='password'
+                        placeholder='phone number'
+                        keyboardType={'phone-pad'}
                     />
 
                     {error && <Text style={{color: 'red', marginBottom: 10}}>{error}</Text>}
-
                     <Button title='Sign In'
-                            onPress={handleSignIn}
-                            disabled={!(email && password)}
+                            color={color.button}
+                            disabled={!(phone)}
+                            onPress={() => handleSignIn()}
                     />
                 </View>
 
