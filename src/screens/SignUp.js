@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
-import {Button, Image, Modal, Pressable, SafeAreaView, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Button, Image, Modal, SafeAreaView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {color, input, lugyoneLogo} from '../styles/theme';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const SignUp = ({navigation}) => {
     const [name, setName] = useState('');
@@ -11,7 +10,7 @@ const SignUp = ({navigation}) => {
     const [error, setError] = useState(null);
     const [confirm, setConfirm] = useState(null);
     const [code, setCode] = useState('');
-    const [modal, setModal] = useState(true);
+    const [modal, setModal] = useState(false);
 
     const handleSignUp = async () => {
         try {
@@ -32,13 +31,15 @@ const SignUp = ({navigation}) => {
 
     async function confirmCode() {
         try {
-            await confirm.confirm(code);
+            const createdUser = await confirm.confirm(code);
             const newUser = {
                 name,
                 phone,
                 photoURL: 'http://',
             };
             await firestore().collection('users').doc(createdUser.user.uid).set(newUser);
+            setModal(false)
+            navigation.goBack()
         } catch (error) {
             console.log(error);
             if (error.code === 'auth/invalid-verification-code') {
@@ -132,6 +133,7 @@ const SignUp = ({navigation}) => {
                             paddingLeft: 10,
                         }}
                     />
+                    {error && <Text style={{color: 'red', marginTop: 10}}>{error}</Text>}
                     <TouchableOpacity
                         onPress={() => confirmCode()}
                         style={{
@@ -144,7 +146,6 @@ const SignUp = ({navigation}) => {
                             marginTop: 10,
                         }}
                     >
-                        {error && <Text style={{color: 'red', marginBottom: 10}}>{error}</Text>}
                         <Text
                             style={{color: 'white'}}>
                             Confirm

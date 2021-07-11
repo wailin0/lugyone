@@ -60,8 +60,10 @@ const Profile = ({navigation}) => {
         });
     };
 
+    console.log(login)
+
     if (!user) {
-        return <Loading/>;
+        return <Loading/>
     }
 
     return (
