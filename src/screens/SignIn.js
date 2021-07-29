@@ -1,8 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Image, Modal, SafeAreaView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {color, input, lugyoneLogo} from '../styles/theme';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import CountriesPhoneCodeListModal from '../components/CountriesPhoneCodeListModal';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import api from '../services/api';
 
 const SignIn = ({navigation}) => {
         const [phone, setPhone] = useState('');
@@ -10,6 +13,17 @@ const SignIn = ({navigation}) => {
         const [confirm, setConfirm] = useState(null);
         const [code, setCode] = useState('');
         const [modal, setModal] = useState(false);
+        const [countriesPhoneCodeList, setCountriesPhoneCodeList] = useState(null);
+        const [selectedCountry, setSelectedCountry] = useState('Myanmar');
+        const [selectedPhoneCode, setSelectedPhoneCode] = useState('+95');
+        const [countriesListModal, setCountriesListModal] = useState(false);
+
+        useEffect(() => {
+            api.getCountries()
+                .then(res => {
+                    setCountriesPhoneCodeList(res);
+                });
+        }, []);
 
         const handleSignIn = async () => {
             try {
@@ -20,7 +34,7 @@ const SignIn = ({navigation}) => {
                 if (response.empty) {
                     setError('User doesnt exist');
                 } else {
-                    const confirmation = await auth().signInWithPhoneNumber(`+95 ${phone}`);
+                    const confirmation = await auth().signInWithPhoneNumber(selectedPhoneCode + ' ' + phone);
                     setConfirm(confirmation);
                     setModal(true);
                 }
@@ -39,6 +53,7 @@ const SignIn = ({navigation}) => {
             try {
                 await confirm.confirm(code);
                 setModal(false);
+                navigation.navigate('Profile')
             } catch (error) {
                 console.log(error);
                 if (error.code === 'auth/invalid-verification-code') {
@@ -67,13 +82,25 @@ const SignIn = ({navigation}) => {
                         <Text style={{fontSize: 20, marginBottom: 10}}>
                             Sign in with your phone number
                         </Text>
-                        <TextInput
-                            value={phone}
-                            onChangeText={text => setPhone(text)}
-                            style={{...input}}
-                            placeholder='phone number'
-                            keyboardType={'phone-pad'}
-                        />
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <TouchableOpacity
+                                onPress={() => setCountriesListModal(true)}
+                                style={{
+                                    flexDirection: 'row', alignItems: 'center', padding: 5, marginRight: 10,
+                                }}>
+                                <Text style={{marginRight: 10}}>
+                                    {selectedCountry}
+                                </Text>
+                                <Icon name='caret-down' size={15} color="black"/>
+                            </TouchableOpacity>
+                            <TextInput
+                                value={phone}
+                                onChangeText={text => setPhone(text)}
+                                style={{...input, flex: 1}}
+                                placeholder='phone number'
+                                keyboardType={'phone-pad'}
+                            />
+                        </View>
 
                         {error && <Text style={{color: 'red', marginBottom: 10}}>{error}</Text>}
                         <Button title='Sign In'
@@ -145,6 +172,15 @@ const SignIn = ({navigation}) => {
                         </TouchableOpacity>
                     </View>
                 </Modal>
+
+
+                <CountriesPhoneCodeListModal
+                    countriesListModal={countriesListModal}
+                    setCountriesListModal={setCountriesListModal}
+                    countriesPhoneCodeList={countriesPhoneCodeList}
+                    setSelectedCountry={setSelectedCountry}
+                    setSelectedPhoneCode={setSelectedPhoneCode}
+                />
             </SafeAreaView>
         );
     }

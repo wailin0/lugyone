@@ -33,7 +33,6 @@ const RootNavigation = () => {
             <Stack.Screen name='Sign In' component={SignIn}/>
             <Stack.Screen name='Sign Up' component={SignUp}/>
             <Stack.Screen name='Choose Location' component={ChooseLocation}/>
-
         </Stack.Navigator>
     );
 };

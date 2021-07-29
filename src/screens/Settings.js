@@ -1,7 +1,6 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import Header from '../components/Header';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const settings = [
     {
@@ -22,17 +21,17 @@ const Settings = ({navigation}) => {
                         marginTop: 20,
                     }}
                 >
-                    {settings.map(setting =>
-                        <TouchableOpacity
-                            key={setting.name}
-                            style={{flexDirection: 'row', marginBottom: 30, alignItems: 'center'}}
-                        >
-                            <Text style={{alignSelf: 'baseline', fontSize: 20}}>
-                                {setting.name}
-                            </Text>
-                            <Icon name='angle-right' style={{marginLeft: 'auto'}} size={24} color="black"/>
-                        </TouchableOpacity>,
-                    )}
+                    {/*{settings.map(setting =>*/}
+                    {/*    <TouchableOpacity*/}
+                    {/*        key={setting.name}*/}
+                    {/*        style={{flexDirection: 'row', marginBottom: 30, alignItems: 'center'}}*/}
+                    {/*    >*/}
+                    {/*        <Text style={{alignSelf: 'baseline', fontSize: 20}}>*/}
+                    {/*            {setting.name}*/}
+                    {/*        </Text>*/}
+                    {/*        <Icon name='angle-right' style={{marginLeft: 'auto'}} size={24} color="black"/>*/}
+                    {/*    </TouchableOpacity>,*/}
+                    {/*)}*/}
                 </View>
 
             </View>

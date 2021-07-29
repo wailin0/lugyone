@@ -1,8 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Image, Modal, SafeAreaView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {color, input, lugyoneLogo} from '../styles/theme';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import api from '../services/api';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import CountriesPhoneCodeListModal from '../components/CountriesPhoneCodeListModal';
 
 const SignUp = ({navigation}) => {
     const [name, setName] = useState('');
@@ -11,23 +14,34 @@ const SignUp = ({navigation}) => {
     const [confirm, setConfirm] = useState(null);
     const [code, setCode] = useState('');
     const [modal, setModal] = useState(false);
+    const [countriesPhoneCodeList, setCountriesPhoneCodeList] = useState(null);
+    const [selectedCountry, setSelectedCountry] = useState('Myanmar');
+    const [selectedPhoneCode, setSelectedPhoneCode] = useState('+95');
+    const [countriesListModal, setCountriesListModal] = useState(false);
 
     const handleSignUp = async () => {
         try {
             setError(null);
-            const confirmation = await auth().signInWithPhoneNumber(`+95 ${phone}`);
+            const confirmation = await auth().signInWithPhoneNumber(selectedPhoneCode +' '+ phone);
             setConfirm(confirmation);
             setModal(true);
         } catch (e) {
-            console.log(e)
+            console.log(e);
             if (e.code === 'auth/invalid-phone-number') {
                 setError('Invalid phone number');
-            }
-            else if(e.code === 'auth/too-many-requests'){
-                setError('Too many requests, try again later')
+            } else if (e.code === 'auth/too-many-requests') {
+                setError('Too many requests, try again later');
             }
         }
     };
+
+
+    useEffect(() => {
+        api.getCountries()
+            .then(res => {
+                setCountriesPhoneCodeList(res);
+            });
+    }, []);
 
     async function confirmCode() {
         try {
@@ -38,17 +52,18 @@ const SignUp = ({navigation}) => {
                 photoURL: 'http://',
             };
             await firestore().collection('users').doc(createdUser.user.uid).set(newUser);
-            setModal(false)
-            navigation.goBack()
+            setModal(false);
+            navigation.goBack();
         } catch (error) {
             console.log(error);
             if (error.code === 'auth/invalid-verification-code') {
                 setError('Invalid code');
+            } else if (error.code === 'auth/session-expired') {
+                setError('Code Expired');
             }
-            else if(error.code === 'auth/session-expired')
-                setError('Code Expired')
         }
     }
+
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -74,13 +89,25 @@ const SignUp = ({navigation}) => {
                         placeholder='full name'
                         autoCapitalize='words'
                     />
-                    <TextInput
-                        value={phone}
-                        onChangeText={text => setPhone(text)}
-                        style={{...input}}
-                        placeholder='phone number'
-                        keyboardType={'phone-pad'}
-                    />
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <TouchableOpacity
+                            onPress={() => setCountriesListModal(true)}
+                            style={{
+                                flexDirection: 'row', alignItems: 'center', padding: 5, marginRight: 10,
+                            }}>
+                            <Text style={{marginRight: 10}}>
+                                {selectedCountry}
+                            </Text>
+                            <Icon name='caret-down' size={15} color="black"/>
+                        </TouchableOpacity>
+                        <TextInput
+                            value={phone}
+                            onChangeText={text => setPhone(text)}
+                            style={{...input, flex: 1}}
+                            placeholder='phone number'
+                            keyboardType={'phone-pad'}
+                        />
+                    </View>
 
                     {error && <Text style={{color: 'red', marginBottom: 10}}>{error}</Text>}
                     <Button title='Sign Up'
@@ -153,6 +180,16 @@ const SignUp = ({navigation}) => {
                     </TouchableOpacity>
                 </View>
             </Modal>
+
+
+            <CountriesPhoneCodeListModal
+                countriesListModal={countriesListModal}
+                setCountriesListModal={setCountriesListModal}
+                countriesPhoneCodeList={countriesPhoneCodeList}
+                setSelectedCountry={setSelectedCountry}
+                setSelectedPhoneCode={setSelectedPhoneCode}
+            />
+
         </SafeAreaView>
     );
 };
